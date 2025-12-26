@@ -1,14 +1,17 @@
 version: '3.8'
 
 services:
-  tests:
+  test-runner:
     build: .
-    image: trial-aqa-python:latest
+    image: saucedemo-auth-automation:latest
+    container_name: saucedemo-tests
+    ports:
+      - "8080:8080"  # Expose Allure report server
     volumes:
-      - ./allure-results:/app/allure-results
-      - ./allure-report:/app/allure-report
+      - ./allure-results:/app/allure-results  # Share test results with host
+      - ./allure-report:/app/allure-report    # Share report with host
     environment:
       - PYTHONUNBUFFERED=1
-    command: >
-      sh -c "pytest tests/ --alluredir=/app/allure-results &&
-             allure generate /app/allure-results -o /app/allure-report --clean"
+      - DISPLAY=:99  # For headless browser
+    stdin_open: true
+    tty: true

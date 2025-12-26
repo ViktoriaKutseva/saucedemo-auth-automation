@@ -1,6 +1,7 @@
 "Login Page class for Sauce Demo"
 
 from playwright.sync_api import Page
+
 from src.pages.base_page import BasePage
 
 
@@ -72,9 +73,9 @@ class LoginPage(BasePage):
         return self.page.locator(self.ERROR_MESSAGE).inner_text()
     
     def close_error_message(self) -> "LoginPage":
-        """Check if the error message is displayed.
+        """Close the error message if it is displayed.
         Returns:
-            bool: True if the error message is visible, False otherwise.
+            LoginPage: The current LoginPage instance.
         """
         if self.is_error_message_displayed():
             self.page.locator(self.ERROR_CLOSE_BUTTON).click()

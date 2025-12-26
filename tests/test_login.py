@@ -1,11 +1,9 @@
 "Login tests for the Saucedemo"
 import allure
 import pytest
-from playwright.sync_api import Page
 
 from src.pages.inventory_page import InventoryPage
 from src.pages.login_page import LoginPage
-from tests.conftest import login_page
 
 
 @allure.epic("SauceDemo Web Application")
@@ -42,6 +40,9 @@ class TestLogin:
         with allure.step("Verify redirect to inventory page and contents"):
             inventory_page.wait_for_page_load() 
             assert inventory_page.is_on_inventory_page()
+            assert "inventory.html" in inventory_page.get_url(), (
+                f"Expected to be on inventory page, but URL is: {inventory_page.get_url()}"
+            )
         
         with allure.step("Check inventory page contents"):
             assert inventory_page.is_container_displayed()
@@ -53,12 +54,17 @@ class TestLogin:
     @allure.description("Test the login functionality with an invalid password for a standard user.")
     @allure.severity(allure.severity_level.CRITICAL)
     @allure.tag("validation")
-    def test_login_with_invalid_password(self, login_page: LoginPage):
+    @pytest.mark.parametrize("username,password,expected_error", [
+        ("standard_user", "wrong_password", "Epic sadface: Username and password do not match any user in this service"),
+        ("locked_out_user", "secret_sauce", "Epic sadface: Sorry, this user has been locked out."),
+        ("", "", "Epic sadface: Username is required"),
+    ])
+    def test_login_with_invalid_credentials(self, login_page: LoginPage, username: str, password: str, expected_error: str):
         """
-        Test login attempt with invalid password.
+        Test login attempt with invalid credentials.
         Steps:
         1. Open login page
-        2. Enter valid username but wrong password
+        2. Enter username and password
         3. Click login button
         4. Verify error message is displayed
         5. Verify error message text
@@ -68,83 +74,23 @@ class TestLogin:
             login_page.open()
             assert login_page.is_on_login_page()
 
-        with allure.step("Enter valid username but invalid password"):
-            login_page.login("standard_user", "wrong_password")
+        with allure.step(f"Enter username: '{username}' and password: '{password}'"):
+            login_page.login(username, password)
 
         with allure.step("Verify error message is displayed"):
             assert login_page.is_error_message_displayed()
-            expected_error = "Epic sadface: Username and password do not match any user in this service"
             actual_error = login_page.get_error_message_text()
-            assert actual_error == expected_error, f"Expected error message: '{expected_error}', but got: '{actual_error}'"
+            assert actual_error == expected_error, (
+                f"Expected error message: '{expected_error}', but got: '{actual_error}'"
+            )
     
         with allure.step("Verify still on login page"):
             assert login_page.is_on_login_page()
-
-    @allure.story("Locked Out User Login")
-    @allure.title("Test login attempt with locked out user")
-    @allure.description("Test the login functionality with a locked out user.")
-    @allure.severity(allure.severity_level.CRITICAL)
-    @allure.tag("validation", "security")
-    def test_login_locked_out_user(self, login_page: LoginPage):
-        """
-        Test login attempt with locked out user.
-        Steps:
-        1. Open login page
-        2. Enter locked out username and valid password
-        3. Click login button
-        4. Verify error message is displayed
-        5. Verify error message text
-        6. Verify still on login page
-        """
-        with allure.step("Open login page"):
-            login_page.open()
-            assert login_page.is_on_login_page()
-
-        with allure.step("Enter locked out user credentials"):        
-            login_page.login("locked_out_user", "secret_sauce")
-
-        with allure.step("Verify error message is displayed"):
-            assert login_page.is_error_message_displayed()
-            expected_error = "Epic sadface: Sorry, this user has been locked out."
-            actual_error = login_page.get_error_message_text()
-            assert actual_error == expected_error, f"Expected error message: '{expected_error}', but got: '{actual_error}'"
-
-        with allure.step("Verify still on login page"):
-            assert login_page.is_on_login_page()
-
-    @allure.story("Empty Fields Login")
-    @allure.title("Test login attempt with empty username and password fields")
-    @allure.description("Test the login functionality when both username and password fields are left empty.")
-    @allure.severity(allure.severity_level.NORMAL)
-    @allure.tag("validation")
-    def test_login_with_empty_fields(self, login_page: LoginPage):
-        """
-        Test login attempt with empty username and password fields.
-        Steps:
-        1. Open login page
-        2. Leave username and password fields empty
-        3. Click login button
-        4. Verify error message is displayed
-        5. Verify error message text
-        6. Verify still on login page
-        """
-        
-        with allure.step("Open login page"):
-            login_page.open()
-            assert login_page.is_on_login_page()
-        
-        with allure.step("Enter empty username and password credentials"):        
-            login_page.login("", "")
-
-        with allure.step("Verify error message is displayed"):
-            assert login_page.is_error_message_displayed()
-            expected_error = "Epic sadface: Username is required"
-            actual_error = login_page.get_error_message_text()
-            assert actual_error == expected_error, f"Expected error message: '{expected_error}', but got: '{actual_error}'"
-
-        with allure.step("Verify still on login page"):
-            assert login_page.is_on_login_page() 
-
+            assert login_page.get_url() == login_page.URL, (
+                f"Expected to stay on login page ({login_page.URL}), "
+                f"but URL is: {login_page.get_url()}"
+            )
+    
     @allure.story("Performance Testing")
     @allure.title("Test login with performance glitch user")
     @allure.description(
@@ -177,7 +123,9 @@ class TestLogin:
 
         with allure.step("Verify redirect to inventory page and contents"):
             assert inventory_page.is_on_inventory_page()
-            assert "inventory.html" in inventory_page.get_url()
+            assert "inventory.html" in inventory_page.get_url(), (
+                f"Expected to be on inventory page, but URL is: {inventory_page.get_url()}"
+            )
 
         with allure.step("Check inventory page contents"):
             assert inventory_page.is_container_displayed()

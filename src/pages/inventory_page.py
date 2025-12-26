@@ -1,6 +1,7 @@
 "Inventory Page class for Sauce Demo"
 
 from playwright.sync_api import Page
+
 from src.pages.base_page import BasePage
 
 
@@ -24,7 +25,6 @@ class InventoryPage(BasePage):
     def wait_for_page_load(self) -> None:
         """Wait for the inventory page to load completely."""
         self.page.wait_for_url(self.URL_PATTERN)
-        # self.page.locator(self.INVENTORY_CONTAINER).wait_for(state="visible")
 
     def is_on_inventory_page(self) -> bool:
         """Check if the current page is the inventory page.
