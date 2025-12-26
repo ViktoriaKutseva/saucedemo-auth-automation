@@ -38,5 +38,3 @@ class BasePage:
             path (str): The file path to save the screenshot.
         """
         self.page.screenshot(path=path)
-
-    
