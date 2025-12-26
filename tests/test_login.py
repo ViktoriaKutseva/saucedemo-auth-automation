@@ -6,7 +6,6 @@ from src.pages.inventory_page import InventoryPage
 from src.pages.login_page import LoginPage
 
 
-@allure.epic("SauceDemo Web Application")
 @allure.feature("Authentication")
 @pytest.mark.smoke
 @pytest.mark.login
@@ -18,6 +17,7 @@ class TestLogin:
     @allure.description("Test the login functionality with valid credentials for a standard user.")
     @allure.severity(allure.severity_level.BLOCKER)
     @allure.tag("critical")
+    
     def test_successful_login_standard_user(self, login_page: LoginPage, inventory_page: InventoryPage):
         """
         Test successful login with standard user.
