@@ -34,4 +34,4 @@ ENV PYTHONUNBUFFERED=1
 # Expose port for Allure report server
 EXPOSE 8080
 
-CMD ["sh", "-c", "uv run pytest tests/ --alluredir=/app/allure-results && allure generate /app/allure-results -o /app/allure-report --clean && cd /app/allure-report && python3 -m http.server 8080"]
+CMD ["sh", "-c", "uv run pytest tests/ --alluredir=/app/allure-results; allure generate /app/allure-results -o /app/allure-report --clean && cd /app/allure-report && python3 -m http.server 8080"]
