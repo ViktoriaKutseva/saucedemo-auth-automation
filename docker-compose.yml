@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  tests:
+    build: .
+    image: trial-aqa-python:latest
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./allure-report:/app/allure-report
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: >
+      sh -c "pytest tests/ --alluredir=/app/allure-results &&
+             allure generate /app/allure-results -o /app/allure-report --clean"
