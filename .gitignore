@@ -212,3 +212,6 @@ docs/
 # python-version file
 .python-version
 
+# Allure
+allure-results/
+allure-report/
