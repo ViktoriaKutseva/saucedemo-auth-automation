@@ -30,7 +30,7 @@ make report
 **Using uv directly:**
 ```bash
 uv sync
-uv run playwright install chromium
+uv run playwright install --with-deps chromium
 uv run pytest
 # Generate and open Allure report:
 allure generate allure-results -o allure-report --clean
@@ -42,7 +42,7 @@ allure open allure-report
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python -m playwright install chromium
+python -m playwright install --with-deps chromium
 pytest
 # Generate and open Allure report:
 allure generate allure-results -o allure-report --clean
