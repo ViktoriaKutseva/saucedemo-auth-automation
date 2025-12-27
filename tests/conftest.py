@@ -28,7 +28,7 @@ def trace_on_failure(context: BrowserContext, request):
         context.tracing.stop(path=trace_path)
         allure.attach.file(
             trace_path, 
-            name="Playwright Trace, to view the error: https://trace.playwright.dev/", 
+            name="Playwright Trace: View at https://trace.playwright.dev/", 
             attachment_type="application/zip",
             
         )

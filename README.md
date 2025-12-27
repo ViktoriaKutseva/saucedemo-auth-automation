@@ -32,6 +32,21 @@ make report
 uv sync
 uv run playwright install chromium
 uv run pytest
+# Generate and open Allure report:
+allure generate allure-results -o allure-report --clean
+allure open allure-report
+```
+
+**Using pip directly:**
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python -m playwright install chromium
+pytest
+# Generate and open Allure report:
+allure generate allure-results -o allure-report --clean
+allure open allure-report
 ```
 
 ### 2. Docker Run / Запуск в Docker
@@ -108,5 +123,5 @@ If you don't have `make` or `uv`:
 The Docker container runs the tests and then starts a web server for the Allure report.
 ```bash
 docker build -t saucedemo-auth-automation .
-docker run --rm -p 8080:8080 saucedemo-auth-automation
+docker run --rm -it -p 8080:8080 saucedemo-auth-automation:latest
 ```
