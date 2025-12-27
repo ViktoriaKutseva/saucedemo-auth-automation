@@ -10,7 +10,7 @@ help:  ## Show this help message
 
 install:  ## Install dependencies
 	uv sync
-	uv run playwright install chromium
+	uv run playwright install chromium --with-deps
 
 test:  ## Run tests in headless mode
 	uv run pytest --headed false
